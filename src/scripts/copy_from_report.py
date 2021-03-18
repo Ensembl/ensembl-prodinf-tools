@@ -17,7 +17,7 @@ from collections import namedtuple
 import json
 import os
 import sqlalchemy as sa
-from ensembl.production.toolkit.db_copy_client import DbCopyClient
+from ensembl.production.core.clients.dbcopy import DbCopyClient
 from ensembl.production.core.db_utils import validate_mysql_url
 
 

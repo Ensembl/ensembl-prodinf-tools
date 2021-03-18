@@ -15,57 +15,7 @@ import argparse
 import json
 import logging
 
-import requests
-
-from ensembl.production.core.rest import RestClient
-
-
-class EventClient(RestClient):
-    """
-    Simple client for submitting an event to the event service and checking on progress
-    This uses the base RestClient, but all endpoint URIs for checking on submited events
-    have process as a path element, so this client combines the job_id and process together
-    """
-
-    def submit_job(self, event):
-        """Submit an event for processing"""
-        logging.info("Submitting job")
-        return RestClient.submit_job(self, event)
-
-    def list_jobs(self, process):
-        """List all jobs for a given process"""
-        logging.info("Listing")
-        r = requests.get(self.jobs.format(self.uri) + '/' + process)
-        r.raise_for_status()
-        return r.json()
-
-    def delete_job(self, process, job_id, kill=False):
-        return super(EventClient, self).delete_job(process + '/' + str(job_id), kill)
-
-    def retrieve_job_failure(self, process, job_id):
-        return super(EventClient, self).retrieve_job_failure(process + '/' + str(job_id))
-
-    def retrieve_job_email(self, process, job_id):
-        return super(EventClient, self).retrieve_job_email(process + '/' + str(job_id))
-
-    def retrieve_job(self, process, job_id):
-        return super(EventClient, self).retrieve_job(process + '/' + str(job_id))
-
-    def collate_jobs(self, output_file, pattern='.*'):
-        raise AttributeError("Job collation not supported")
-
-    def processes(self):
-        """Retrieve a list of processes that the service can schedule"""
-        r = requests.get(self.uri + 'processes')
-        r.raise_for_status()
-        return r.json()
-
-    def events(self):
-        """Retrieve a list of events that the service can handle"""
-        r = requests.get(self.uri + 'events')
-        r.raise_for_status()
-        return r.json()
-
+from ensembl.production.core.clients.event import EventClient
 
 if __name__ == '__main__':
 

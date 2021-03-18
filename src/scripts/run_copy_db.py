@@ -13,10 +13,11 @@
 #    limitations under the License.
 
 
-from ensembl.production.core.models.hive import HiveInstance
-import time
-import logging
 import argparse
+import logging
+import time
+
+from ensembl.production.core.models.hive import HiveInstance
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -44,7 +45,7 @@ logging.debug(args)
 logging.info("Connecting to hive")
 hive = HiveInstance(args.hive_uri[0])
 
-input = {"source_db_uri":args.source_db_uri[0] }
+input = {"source_db_uri": args.source_db_uri[0]}
 if args.target_db_uri is not None:
     input['target_db_uri'] = args.target_db_uri[0]
 if args.only_tables is not None:
@@ -56,22 +57,22 @@ if args.update is not None:
 if args.drop is not None:
     input['drop'] = args.drop
 
-logging.info("Submitting job with arguments "+str(input))
-job = hive.create_job('copy_database',input)
+logging.info("Submitting job with arguments " + str(input))
+job = hive.create_job('copy_database', input)
 
-logging.info("Job submitted with ID "+str(job.job_id))
+logging.info("Job submitted with ID " + str(job.job_id))
 
 output = None
 while True:
     logging.info("Sleeping for %ds" % args.sleep)
     time.sleep(args.sleep)
-    output = hive.get_result_for_job_id(job.job_id)        
+    output = hive.get_result_for_job_id(job.job_id)
     if output['status'] != 'incomplete':
-        logging.debug("Job finished with status "+output['status'])
+        logging.debug("Job finished with status " + output['status'])
         break
 
 if output['status'] == 'failed':
     msg = hive.get_job_failure_msg_by_id(job.job_id)
-    logging.error("Job failed with error "+msg.msg)
+    logging.error("Job failed with error " + msg.msg)
 else:
     print("Status: %s\n" % output['status'])

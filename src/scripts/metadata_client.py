@@ -13,59 +13,7 @@
 import argparse
 import logging
 
-from ensembl.production.core.rest import RestClient
-from ensembl.production.core.server_utils import assert_mysql_db_uri
-
-
-class MetadataClient(RestClient):
-
-    def submit_job(self, database_uri, e_release, eg_release, release_date, current_release, email, comment, source,
-                   email_notification):
-        assert_mysql_db_uri(database_uri)
-
-        payload = {
-            'database_uri': database_uri,
-            'e_release': e_release,
-            'eg_release': eg_release,
-            'release_date': release_date,
-            'current_release': current_release,
-            'email': email,
-            'comment': comment,
-            'source': source
-        }
-        if email_notification != None:
-            payload['email_notification'] = email_notification
-        return super(MetadataClient, self).submit_job(payload)
-
-    def print_job(self, job, print_results=False, print_input=False):
-        logging.info("Job %s (%s) to (%s) - %s" % (
-            job['id'], job['input']['metadata_uri'], job['input']['database_uri'], job['status']))
-        if print_input == True:
-            self.print_inputs(job['input'])
-        if job['status'] == 'complete':
-            if print_results == True:
-                logging.info("Load result: " + str(job['status']))
-                logging.info("Load took: " + str(job['output']['runtime']))
-        elif job['status'] == 'running':
-            if print_results == True:
-                logging.info("Load result: " + str(job['status']))
-                logging.info(str(job['progress']['complete']) + "/" + str(job['progress']['total']) + " task complete")
-                logging.info("Status: " + str(job['progress']['message']))
-        elif job['status'] == 'failed':
-            failure_msg = self.retrieve_job_failure(job['id'])
-            logging.info("Job failed with error: " + str(failure_msg['msg']))
-
-    def print_inputs(self, i):
-        logging.info("database URI: " + i['database_uri'])
-        logging.info("Ensembl release number: " + i['e_release'])
-        logging.info("Release date: " + i['release_date'])
-        logging.info("Is it the current release: " + i['current_release'])
-        if 'eg_release' in i:
-            logging.info("EG release number: " + i['eg_release'])
-            logging.info("Email of submitter: " + i['email'])
-            logging.info("Comment: " + i['comment'])
-            logging.info("Source: " + i['source'])
-
+from ensembl.production.core.clients.metadata import MetadataClient
 
 if __name__ == '__main__':
 
