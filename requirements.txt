@@ -1,2 +1,2 @@
--e git+git://github.com/Ensembl/ensembl-prodinf-core#egg=ensembl
+ensembl_prodinf_core@git+https://github.com/Ensembl/ensembl-prodinf-core.git#egg=ensembl_prodinf_core
 requests==2.25.1
