@@ -22,11 +22,7 @@ from sqlalchemy.engine.url import make_url
 from ensembl.production.core.server_utils import assert_http_uri, assert_mysql_db_uri, assert_email
 
 
-
-
-
-if __name__ == '__main__':
-
+def main():
     parser = argparse.ArgumentParser(description='Handover a database via a REST service')
     parser.add_argument('-u', '--uri', help='HC REST service URI', required=True)
     parser.add_argument('-a', '--action', help='Action to take',
@@ -71,3 +67,7 @@ if __name__ == '__main__':
         client.handover_summary_email(handovers, args.email)
     else:
         logging.error("Action " + args.action + " not supported")
+
+
+if __name__ == '__main__':
+    main()

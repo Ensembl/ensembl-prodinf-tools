@@ -30,8 +30,7 @@ def import_requirements():
 setup(
     name='ensembl-prodinf-tools',
     version='1.0.0',
-    namespace_packages=['ensembl'],
-    packages=find_namespace_packages(where='src', include=['ensembl.production.*']),
+    packages=find_namespace_packages(where='src'),
     package_dir={'': 'src'},
     url='https://github.com/Ensembl/ensembl-prodinf-tools',
     license='APACHE 2.0',
@@ -54,5 +53,16 @@ setup(
         'Topic :: System :: Distributed Computing',
         'Operating System :: POSIX',
         'Operating System :: Unix'
-    ]
+    ],
+    entry_points={
+        "console_scripts": [
+            # "copy-from-report=scripts.copy_from_report:main",
+            "datacheck-client=scripts.datacheck_client:main",
+            "dbcopy-client=scripts.dbcopy_client:main",
+            "gifts-client=scripts.gifts_client:main",
+            "handover-client=scripts.handover_client:main",
+            "metadata-client=scripts.metadata_client:main",
+        ]
+
+    }
 )

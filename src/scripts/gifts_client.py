@@ -16,8 +16,8 @@ import logging
 
 from ensembl.production.core.clients.gifts import GIFTsClient
 
-if __name__ == '__main__':
 
+def main():
     parser = argparse.ArgumentParser(description='Ensembl Production: Interact with the GIFTs services')
 
     parser.add_argument('-u', '--uri', help='GIFTs Production service REST URI', required=True)
@@ -52,3 +52,7 @@ if __name__ == '__main__':
 
     elif args.action == 'list':
         jobs = client.list_jobs(args.output_file, args.tag)
+
+
+if __name__ == '__main__':
+    main()
