@@ -15,7 +15,11 @@ Installation
 ------------
 
 This repository can be installed as a Python package. Simply, clone it, then
-`cd` into its root directory and run `pip install .`
+`cd` into its root directory and run:
+
+```
+pip install .
+```
 
 
 Usage
@@ -24,27 +28,27 @@ Usage
 Command line tools provided by this package:
 
 
-### `datacheck-client`
+#### `datacheck-client`
 
 Tool for submitting/retrieving DataChecks to/from EnsEMBL Production DC Service
 
 
-### `dbcopy-client`
+#### `dbcopy-client`
 
 Tool for managing DBCopy Request Jobs
 
 
-### `gifts-client`
+#### `gifts-client`
 
 Tool for submitting/retrieving Gifts Jobs to/from EnsEMBL Production Gifts Service
 
 
-### `handover-client`
+#### `handover-client`
 
 Tool for submitting/retrieving Handover Jobs to/from EnsEMBL Production Handover Service
 
 
-### `metadata-client`
+#### `metadata-client`
 
 Tool for submitting/retrieving Metadata Jobs to/from EnsEMBL Production Metadata Service
 
