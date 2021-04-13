@@ -1,2 +1,4 @@
 ensembl_prodinf_core@git+https://github.com/Ensembl/ensembl-prodinf-core.git#egg=ensembl_prodinf_core
 requests==2.25.1
+click==7.1.2
+elasticsearch==6.8.2
