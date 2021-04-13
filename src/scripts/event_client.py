@@ -17,8 +17,8 @@ import logging
 
 from ensembl.production.core.clients.event import EventClient
 
-if __name__ == '__main__':
 
+def main():
     parser = argparse.ArgumentParser(description='Run HCs via a REST service')
 
     parser.add_argument('-u', '--uri', help='HC REST service URI', required=True)
@@ -61,3 +61,7 @@ if __name__ == '__main__':
 
     elif args.action == 'processes':
         logging.info(client.processes())
+
+
+if __name__ == '__main__':
+    main()

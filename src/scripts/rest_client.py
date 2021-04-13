@@ -16,8 +16,8 @@ import logging
 
 from ensembl.production.core.rest import RestClient
 
-if __name__ == '__main__':
 
+def main():
     parser = argparse.ArgumentParser(description='Run Production jobs via a REST service')
 
     parser.add_argument('-u', '--uri', help='HC REST service URI', required=True)
@@ -50,3 +50,7 @@ if __name__ == '__main__':
         client.delete_job(args.job_id)
     else:
         logging.error("Unknown action %s", args.action)
+
+
+if __name__ == '__main__':
+    main()

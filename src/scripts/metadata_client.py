@@ -15,8 +15,7 @@ import logging
 
 from ensembl.production.core.clients.metadata import MetadataClient
 
-if __name__ == '__main__':
-
+def main():
     parser = argparse.ArgumentParser(description='Metadata load via a REST service')
 
     parser.add_argument('-u', '--uri', help='Metadata database REST service URI', required=True)
@@ -77,3 +76,7 @@ if __name__ == '__main__':
 
     elif args.action == 'email':
         client.results_email(args.job_id, args.email)
+
+
+if __name__ == '__main__':
+    main()

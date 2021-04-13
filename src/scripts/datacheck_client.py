@@ -16,8 +16,8 @@ import logging
 
 from ensembl.production.core.clients.datachecks import DatacheckClient
 
-if __name__ == '__main__':
 
+def main():
     parser = argparse.ArgumentParser(description='Run datachecks via a REST service')
 
     parser.add_argument('-u', '--uri', help='Datacheck REST service URI', required=True)
@@ -59,3 +59,7 @@ if __name__ == '__main__':
 
     elif args.action == 'list':
         jobs = client.list_jobs(args.output_file, args.tag, args.failure_only)
+
+
+if __name__ == '__main__':
+    main()
