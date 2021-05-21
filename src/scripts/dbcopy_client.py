@@ -70,9 +70,13 @@ def main():
                 logging.error('Target hostname error: %s', err)
             if source_errs or target_errs:
                 sys.exit(1)
-        job_id = client.submit_job(args.src_host, args.src_incl_db, args.src_skip_db, args.src_incl_tables,
-                                   args.src_skip_tables, args.tgt_host, args.tgt_db_name, args.skip_optimize,
-                                   args.wipe_target, args.convert_innodb, args.email_list, args.user)
+        try:
+            job_id = client.submit_job(args.src_host, args.src_incl_db, args.src_skip_db, args.src_incl_tables,
+                                       args.src_skip_tables, args.tgt_host, args.tgt_db_name, args.skip_optimize,
+                                       args.wipe_target, args.convert_innodb, args.email_list, args.user)
+        except RuntimeError as err:
+            logging.error("Error: %s", err)
+            sys.exit(1)
         logging.info('Job submitted with ID %s', job_id)
 
     elif args.action == 'retrieve':
