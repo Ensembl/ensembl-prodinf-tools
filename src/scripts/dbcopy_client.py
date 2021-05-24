@@ -18,6 +18,16 @@ import sys
 from ensembl.production.core.clients.dbcopy import DbCopyRestClient
 
 
+def handle_runtime_error(error):
+    logging.error("Error: %s", error)
+    sys.exit(1)
+
+
+def handle_key_error(error, job):
+    msg = f"Invalid response. Missing argument: '{err}'. Response: {job}"
+    logging.error(msg)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Copy Databases via a REST service')
 
@@ -75,18 +85,27 @@ def main():
                                        args.src_skip_tables, args.tgt_host, args.tgt_db_name, args.skip_optimize,
                                        args.wipe_target, args.convert_innodb, args.email_list, args.user)
         except RuntimeError as err:
-            logging.error("Error: %s", err)
-            sys.exit(1)
+            handle_runtime_error(err)
         logging.info('Job submitted with ID %s', job_id)
 
     elif args.action == 'retrieve':
-        job = client.retrieve_job(args.job_id)
-        client.print_job(job, args.user, print_results=True)
-
+        try:
+            job = client.retrieve_job(args.job_id)
+            client.print_job(job, args.user, print_results=True)
+        except RuntimeError as err:
+            handle_runtime_error(err)
+        except KeyError as err:
+            handle_key_error(err, job)
     elif args.action == 'list':
-        jobs = client.list_jobs()
+        try:
+            jobs = client.list_jobs()
+        except RuntimeError as err:
+            handle_error(err)
         for job in jobs:
-            client.print_job(job, args.user)
+            try:
+                client.print_job(job, args.user)
+            except KeyError as err:
+                handle_key_error(err, job)
 
 
 if __name__ == '__main__':
