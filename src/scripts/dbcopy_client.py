@@ -67,45 +67,39 @@ def main():
         logging.basicConfig(level=logging.INFO, format='%(message)s')
 
     client = DbCopyRestClient(args.uri)
-
-    if args.action == 'submit':
-        logging.info('Submitting %s -> %s', args.src_host, args.tgt_host)
-        if not args.skip_check:
-            logging.info('Checking source and target hostname validity...')
-            source_errs = client.check_hosts('source', (args.src_host,))
-            target_errs = client.check_hosts('target', args.tgt_host.split(','))
-            for err in source_errs:
-                logging.error('Source hostname error: %s', err)
-            for err in target_errs:
-                logging.error('Target hostname error: %s', err)
-            if source_errs or target_errs:
-                sys.exit(1)
-        try:
+    try:
+        if args.action == 'submit':
+            logging.info('Submitting %s -> %s', args.src_host, args.tgt_host)
+            if not args.skip_check:
+                logging.info('Checking source and target hostname validity...')
+                source_errs = client.check_hosts('source', (args.src_host,))
+                target_errs = client.check_hosts('target', args.tgt_host.split(','))
+                for err in source_errs:
+                    logging.error('Source hostname error: %s', err)
+                for err in target_errs:
+                    logging.error('Target hostname error: %s', err)
+                if source_errs or target_errs:
+                    sys.exit(1)
             job_id = client.submit_job(args.src_host, args.src_incl_db, args.src_skip_db, args.src_incl_tables,
                                        args.src_skip_tables, args.tgt_host, args.tgt_db_name, args.skip_optimize,
                                        args.wipe_target, args.convert_innodb, args.email_list, args.user)
-        except RuntimeError as err:
-            handle_runtime_error(err)
-        logging.info('Job submitted with ID %s', job_id)
+            logging.info('Job submitted with ID %s', job_id)
 
-    elif args.action == 'retrieve':
-        try:
+        elif args.action == 'retrieve':
             job = client.retrieve_job(args.job_id)
-            client.print_job(job, args.user, print_results=True)
-        except RuntimeError as err:
-            handle_runtime_error(err)
-        except KeyError as err:
-            handle_key_error(err, job)
-    elif args.action == 'list':
-        try:
-            jobs = client.list_jobs()
-        except RuntimeError as err:
-            handle_error(err)
-        for job in jobs:
             try:
-                client.print_job(job, args.user)
+                client.print_job(job, args.user, print_results=True)
             except KeyError as err:
                 handle_key_error(err, job)
+        elif args.action == 'list':
+            jobs = client.list_jobs()
+            for job in jobs:
+                try:
+                    client.print_job(job, args.user)
+                except KeyError as err:
+                    handle_key_error(err, job)
+    except RuntimeError as err:
+        handle_runtime_error(err)
 
 
 if __name__ == '__main__':
