@@ -70,17 +70,17 @@ def main():
 
     if args.action == 'submit':
         logging.info('Submitting %s -> %s', args.src_host, args.tgt_host)
-        if not args.skip_check:
-            logging.info('Checking source and target hostname validity...')
-            source_errs = client.check_hosts('source', (args.src_host,))
-            target_errs = client.check_hosts('target', args.tgt_host.split(','))
-            for err in source_errs:
-                logging.error('Source hostname error: %s', err)
-            for err in target_errs:
-                logging.error('Target hostname error: %s', err)
-            if source_errs or target_errs:
-                sys.exit(1)
         try:
+            if not args.skip_check:
+                logging.info('Checking source and target hostname validity...')
+                source_errs = client.check_hosts('source', (args.src_host,))
+                target_errs = client.check_hosts('target', args.tgt_host.split(','))
+                for err in source_errs:
+                    logging.error('Source hostname error: %s', err)
+                for err in target_errs:
+                    logging.error('Target hostname error: %s', err)
+                if source_errs or target_errs:
+                    sys.exit(1)
             job_id = client.submit_job(args.src_host, args.src_incl_db, args.src_skip_db, args.src_incl_tables,
                                        args.src_skip_tables, args.tgt_host, args.tgt_db_name, args.skip_optimize,
                                        args.wipe_target, args.convert_innodb, args.email_list, args.user)
