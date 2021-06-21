@@ -18,6 +18,16 @@ import sys
 from ensembl.production.core.clients.dbcopy import DbCopyRestClient
 
 
+def handle_runtime_error(error):
+    logging.error("Error: %s", error)
+    sys.exit(1)
+
+
+def handle_key_error(error, job):
+    msg = f"Invalid response. Missing argument: '{err}'. Response: {job}"
+    logging.error(msg)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Copy Databases via a REST service')
 
@@ -57,32 +67,39 @@ def main():
         logging.basicConfig(level=logging.INFO, format='%(message)s')
 
     client = DbCopyRestClient(args.uri)
+    try:
+        if args.action == 'submit':
+            logging.info('Submitting %s -> %s', args.src_host, args.tgt_host)
+            if not args.skip_check:
+                logging.info('Checking source and target hostname validity...')
+                source_errs = client.check_hosts('source', (args.src_host,))
+                target_errs = client.check_hosts('target', args.tgt_host.split(','))
+                for err in source_errs:
+                    logging.error('Source hostname error: %s', err)
+                for err in target_errs:
+                    logging.error('Target hostname error: %s', err)
+                if source_errs or target_errs:
+                    sys.exit(1)
+            job_id = client.submit_job(args.src_host, args.src_incl_db, args.src_skip_db, args.src_incl_tables,
+                                       args.src_skip_tables, args.tgt_host, args.tgt_db_name, args.skip_optimize,
+                                       args.wipe_target, args.convert_innodb, args.email_list, args.user)
+            logging.info('Job submitted with ID %s', job_id)
 
-    if args.action == 'submit':
-        logging.info('Submitting %s -> %s', args.src_host, args.tgt_host)
-        if not args.skip_check:
-            logging.info('Checking source and target hostname validity...')
-            source_errs = client.check_hosts('source', (args.src_host,))
-            target_errs = client.check_hosts('target', args.tgt_host.split(','))
-            for err in source_errs:
-                logging.error('Source hostname error: %s', err)
-            for err in target_errs:
-                logging.error('Target hostname error: %s', err)
-            if source_errs or target_errs:
-                sys.exit(1)
-        job_id = client.submit_job(args.src_host, args.src_incl_db, args.src_skip_db, args.src_incl_tables,
-                                   args.src_skip_tables, args.tgt_host, args.tgt_db_name, args.skip_optimize,
-                                   args.wipe_target, args.convert_innodb, args.email_list, args.user)
-        logging.info('Job submitted with ID %s', job_id)
-
-    elif args.action == 'retrieve':
-        job = client.retrieve_job(args.job_id)
-        client.print_job(job, args.user, print_results=True)
-
-    elif args.action == 'list':
-        jobs = client.list_jobs()
-        for job in jobs:
-            client.print_job(job, args.user)
+        elif args.action == 'retrieve':
+            job = client.retrieve_job(args.job_id)
+            try:
+                client.print_job(job, args.user, print_results=True)
+            except KeyError as err:
+                handle_key_error(err, job)
+        elif args.action == 'list':
+            jobs = client.list_jobs()
+            for job in jobs:
+                try:
+                    client.print_job(job, args.user)
+                except KeyError as err:
+                    handle_key_error(err, job)
+    except RuntimeError as err:
+        handle_runtime_error(err)
 
 
 if __name__ == '__main__':
