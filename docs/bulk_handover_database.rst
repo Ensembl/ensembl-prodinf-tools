@@ -5,8 +5,8 @@ Bulk database handover
 Overview
 ########
 
-The Production infrastructure interface contains a handover service `handover endpoint <https://github.com/Ensembl/ensembl-prodinf-srv/README_handover.rst>`_.
-This document describes how to use the `HandoverClient <../ensembl_prodinf/handover_client.py>`_ class to interact with the endpoint and bulk database handover.
+The Production infrastructure interface contains a handover service `handover endpoint`
+This document describes how to use the `HandoverClient`_ class to interact with the endpoint and bulk database handover.
 
 List of databases to handover
 #########################
@@ -51,13 +51,6 @@ Vertebrates:
 Submit the jobs using Python REST db copy endpoint:
 ###################################################
 
-Clone the ensembl-prodinf-core repo:
-
-.. code-block:: bash
-
-  git clone https://github.com/Ensembl/ensembl-prodinf-core
-  cd ensembl-prodinf-core
-
 To Submit the job via the REST enpoint
 
 For Vertebrates:
@@ -73,7 +66,7 @@ For Vertebrates:
   git checkout stable
   pyenv activate production-app
   for db in $(cat vertebrates_handover.txt);
-  do handover-client.py --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
+  do handover-client --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
   done
 
 For Fungi/Protists/Bacteria:
@@ -88,7 +81,7 @@ For Fungi/Protists/Bacteria:
   DESCRIPTION="Handover 105 Fungi databases "
   
   for db in $(cat fungi_handover.txt);
-  do handover-client.py --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
+  do handover-client --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
   done
 
 
@@ -99,8 +92,7 @@ The script accept the following arguments:
 
 ::
 
-
-  usage: handover-client.py [-h] -u URI -a
+  usage: handover-client [-h] -u URI -a
                             {submit,retrieve,list,delete,events,processes} [-v]
                             -s SRC_URI -e EMAIL -t
                             {new_genome,new_genebuild,new_assembly,other} -c
