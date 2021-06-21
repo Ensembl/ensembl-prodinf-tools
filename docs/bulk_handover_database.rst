@@ -1,19 +1,19 @@
-******************
+**********************
 Bulk database handover
-******************
+**********************
 
 Overview
 ########
 
 The Production infrastructure interface contains a handover service `handover endpoint`
-This document describes how to use the `HandoverClient`_ class to interact with the endpoint and bulk database handover.
+This document describes how to use the `HandoverClient` class to interact with the endpoint and bulk database handover.
 
 List of databases to handover
-#########################
+#############################
 
 Create file with list of databases to handover, e.g: handover_databases.txt
 
-.. code-block:: bash
+.. code-block::
 
   cavia_porcellus_funcgen_91_4
   homo_sapiens_funcgen_91_38
@@ -23,7 +23,7 @@ Create file with list of databases to handover, e.g: handover_databases.txt
 Or for all the database of a given division:
 
 Non Vertebrates:
-===
+================
 
 * Bacteria - EB
 * Protists - EPr
@@ -34,16 +34,16 @@ Non Vertebrates:
 
 To get the list of databases for Fungi:
 
-.. code-block:: bash
+.. code-block::
 
   RELEASE=41
   perl ensembl-metadata/misc_scripts/get_list_databases_for_division.pl $(mysql-ens-meta-prod-1 details script) -division fungi -release $RELEASE > fungi_handover.txt
 
 
 Vertebrates:
-========
+============
 
-.. code-block:: bash
+.. code-block::
 
   RELEASE=94
   perl ensembl-metadata/misc_scripts/get_list_databases_for_division.pl $(mysql-ens-meta-prod-1 details script) -division vertebrates -release $RELEASE > vertebrates_handover.txt
@@ -51,16 +51,21 @@ Vertebrates:
 Submit the jobs using Python REST db copy endpoint:
 ###################################################
 
-To Submit the job via the REST enpoint
+To Submit the job via the REST endpoint
+
+.. code-block::
+
+    pyenv activate production-tools
 
 For Vertebrates:
 
-.. code-block:: bash
+.. code-block::
 
   DATABASE_SERVER=$(mysql-ens-general-prod-1 details url)
   ENDPOINT=http://production-services.ensembl.org/api/vertebrates/ho/
   EMAIL=john.doe@ebi.ac.uk
-  DESCRIPTION="handover new databases"
+  RELEASE=105
+  DESCRIPTION="Handover $RELEASE new databases"
 
   cd $BASE_DIR/ensembl-prodinf-core
   git checkout stable
@@ -131,7 +136,7 @@ If you have handed over many databases, you can get a summary of your handover:
 
 .. code-block:: bash
 
-  handover-client.py --action summary --uri http://production-services.ensembl.org/api/vertebrates/handovers/jobs/ -e john.doe@ebi.ac.uk
-  handover-client.py --action summary --uri http://production-services.ensembl.org/api/microbes/handovers/jobs/ -e john.doe@ebi.ac.uk
+  handover-client --action summary --uri http://production-services.ensembl.org/api/vertebrates/handovers/jobs/ -e john.doe@ebi.ac.uk
+  handover-client --action summary --uri http://production-services.ensembl.org/api/microbes/handovers/jobs/ -e john.doe@ebi.ac.uk
 
 If a database was handed over multiple times, you will only see the latest one.
