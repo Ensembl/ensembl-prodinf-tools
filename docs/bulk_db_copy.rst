@@ -48,25 +48,23 @@ To get the list of databases for Fungi:
 Submit the jobs using Python REST db copy endpoint:
 ###################################################
 
-Clone the ensembl-prodinf-core repo:
-.. code-block:: bash
+To Submit the job via the REST endpoint
 
-  git clone https://github.com/Ensembl/ensembl-prodinf-core
-  cd ensembl-prodinf-core
+.. code-block::
 
-To submit the job via the REST enpoint
+    pyenv activate production-tools
 
 .. code-block:: bash
 
   SOURCE_SERVER=$(mysql-ens-vertannot-staging details url) #e.g: mysql://ensro@mysql-ens-vertannot-staging:4573/
   TARGET_SERVER=$(mysql-ens-general-prod-1-ensadmin details url)
-  ENDPOINT=http://production-services.ensembl.org/api/vertebrates/db/ #or http://production-services.ensembl.org/api/ensgenomes/db/ for non vertebrates
+  ENDPOINT=http://production-services.ensembl.org/api/dbcopy/requestjob/
 
   cd $BASE_DIR/ensembl-prodinf-core
   git checkout stable
   pyenv activate production-app
   for db in $(cat db_to_copy.txt); 
-  do ensembl_prodinf/db_copy_client.py --action submit --uri ${ENDPOINT} --source_db_uri "${SOURCE_SERVER}${db}" --target_db_uri "${TARGET_SERVER}${db}" --drop 1;
+  do db-copy-client --action submit --uri ${ENDPOINT} --source_db_uri "${SOURCE_SERVER}${db}" --target_db_uri "${TARGET_SERVER}${db}" --drop 1;
   done
 
 Script usage:
@@ -115,13 +113,13 @@ The script accept the following arguments:
 Check job status
 ################
 
-You can check job status either on the production interface: `<http://production-services.ensembl.org/app/vertebrates/>`_ or `<http://production-services.ensembl.org/app/plants/>`_ for non vertebrates:
+You can check job status either on the production interface: `<http://production-services.ensembl.org/ensembl_dbcopy/requestjob/>`_ :
 
 or using the Python client:
 
 .. code-block:: bash
 
-  ensembl_prodinf/db_copy_client.py --action list --uri http://production-services.ensembl.org/api/vertebrates/db/
-  ensembl_prodinf/db_copy_client.py --action list --uri http://production-services.ensembl.org/api/ensgenomes/db/
+  db-copy-client.py --action list --uri http://production-services.ensembl.org/api/vertebrates/db/
+  db-copy-client.py --action list --uri http://production-services.ensembl.org/api/ensgenomes/db/
   
   
