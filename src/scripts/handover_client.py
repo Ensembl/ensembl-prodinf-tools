@@ -19,6 +19,7 @@ from datetime import datetime
 import requests
 from sqlalchemy.engine.url import make_url
 
+from ensembl.production.core.clients.handover import HandoverClient
 from ensembl.production.core.server_utils import assert_http_uri, assert_mysql_db_uri, assert_email
 
 
