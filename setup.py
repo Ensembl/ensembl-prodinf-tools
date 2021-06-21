@@ -29,7 +29,7 @@ def import_requirements():
 
 setup(
     name='ensembl-prodinf-tools',
-    version='1.0.0',
+    version=version,
     packages=find_namespace_packages(where='src'),
     package_dir={'': 'src'},
     url='https://github.com/Ensembl/ensembl-prodinf-tools',
