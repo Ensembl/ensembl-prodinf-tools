@@ -140,7 +140,4 @@ or using the Python client:
 
 .. code-block:: bash
 
-  dbcopy-client --action list --uri http://production-services.ensembl.org/api/dbcopy/requestjob/
-  dbcopy-client --action list --uri http://production-services.ensembl.org/api/dbcopy/requestjob/
-
-
+  dbcopy-client --action list --uri http://production-services.ensembl.org/api/dbcopy/requestjob/ -s <src_host> -t <tgt_host> -e <email> -r <user>
