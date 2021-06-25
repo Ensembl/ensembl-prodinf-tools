@@ -5,7 +5,8 @@ Bulk Database Copy
 Overview
 ########
 
-The Production infrastructure interface allows the copy of database using the FLASK endpoint in the background.  This document describes how to use the `<DbCopyClient ../ensembl_prodinf/db_copy_client.py>`_ class to interact with the endpoint and bulk copy databases.
+The Production infrastructure interface allows the copy of database using the Production Services DBCopy endpoint in the background.
+This document describes how to use `dbcopy-client` command line tool to interact with the endpoint and bulk copy databases.
 
 List of databases to copy
 #########################
@@ -45,14 +46,17 @@ To get the list of databases for Fungi:
   RELEASE=91
   perl ensembl-metadata/misc_scripts/get_list_databases_for_division.pl $(mysql-ens-meta-prod-1 details script) -division vertebrates -release $RELEASE > vertebrates_db_to_copy.txt
 
-Submit the jobs using Python REST db copy endpoint:
-###################################################
 
-To Submit the job via the REST endpoint
+Submit the jobs using Python REST db copy endpoint
+##################################################
+
+To Submit the job via the REST endpoint:
 
 .. code-block::
 
     pyenv activate production-tools
+
+N.B. Make sure `PYTHONPATH` is not set when activating a virtual environment
 
 .. code-block:: bash
 
@@ -60,55 +64,72 @@ To Submit the job via the REST endpoint
   TARGET_SERVER=$(mysql-ens-general-prod-1-ensadmin details url)
   ENDPOINT=http://production-services.ensembl.org/api/dbcopy/requestjob/
 
-  cd $BASE_DIR/ensembl-prodinf-core
-  git checkout stable
-  pyenv activate production-app
-  for db in $(cat db_to_copy.txt); 
-  do db-copy-client --action submit --uri ${ENDPOINT} --source_db_uri "${SOURCE_SERVER}${db}" --target_db_uri "${TARGET_SERVER}${db}" --drop 1;
+  for db in $(cat db_to_copy.txt); do
+    dbcopy-client --action submit --uri ${ENDPOINT} --source_db_uri "${SOURCE_SERVER}${db}" --target_db_uri "${TARGET_SERVER}${db}" --drop 1
   done
 
-Script usage:
-#############
+If activating a virtual environment is not feasible, `dbcopy-client` can be invoked directly:
+
+.. code-block::
+
+   $(pyenv root)/versions/production-tools/bin/dbcopy-client
+
+
+Script usage
+############
 
 The script accept the following arguments:
-::
 
-    usage: db_copy_client.py [-h] -u URI -a
-                             {submit,retrieve,list,delete,email,kill_job}
-                             [-i JOB_ID] [-v] [-o OUTPUT_FILE] [-f INPUT_FILE]
-                             [-s SOURCE_DB_URI] [-t TARGET_DB_URI]
-                             [-y ONLY_TABLES] [-n SKIP_TABLES] [-p UPDATE]
-                             [-d DROP] [-c CONVERT_INNODB] [-k SKIP_OPTIMIZE] [-e EMAIL]
+.. code-block:: bash
 
-    Copy HCs via a REST service
+    usage: dbcopy-client [-h] -u URI -a
+                         {submit,retrieve,list,delete,email,kill_job} [-j JOB_ID]
+                         [-v] -s SRC_HOST -t TGT_HOST [-i SRC_INCL_DB]
+                         [-k SRC_SKIP_DB] [-p SRC_INCL_TABLES]
+                         [-d SRC_SKIP_TABLES] [-n TGT_DB_NAME] [-o SKIP_OPTIMIZE]
+                         [-w WIPE_TARGET] [-c CONVERT_INNODB] -e EMAIL_LIST -r
+                         USER [--skip-check]
 
-    arguments:
+    Copy Databases via a REST service
+
+    optional arguments:
       -h, --help            show this help message and exit
-      -u URI, --uri URI     REST service URI
+      -u URI, --uri URI     Copy database REST service URI
       -a {submit,retrieve,list,delete,email,kill_job}, --action {submit,retrieve,list,delete,email,kill_job}
                             Action to take
-      -i JOB_ID, --job_id JOB_ID
-                            HC job identifier to retrieve
+      -j JOB_ID, --job_id JOB_ID
+                            Copy job identifier to retrieve
       -v, --verbose         Verbose output
-      -o OUTPUT_FILE, --output_file OUTPUT_FILE
-                            File to write output as JSON
-      -f INPUT_FILE, --input_file INPUT_FILE
-                            File containing list of source and target URIs
-      -s SOURCE_DB_URI, --source_db_uri SOURCE_DB_URI
-                            URI of database to copy from
-      -t TARGET_DB_URI, --target_db_uri TARGET_DB_URI
-                            URI of database to copy to
-      -y ONLY_TABLES, --only_tables ONLY_TABLES
-                            List of tables to copy
-      -n SKIP_TABLES, --skip_tables SKIP_TABLES
-                            List of tables to skip
-      -p UPDATE, --update UPDATE
-                            Incremental database update using rsync checksum
-      -d DROP, --drop DROP  Drop database on Target server before copy
-      -c CONVERT_INNODB, --convert_innodb CONVERT_INNODB Convert innoDB tables to MyISAM
-      -k SKIP_OPTIMIZE, --skip_optimize skip the database optimization step after the copy. Useful for very large databases
-      -e EMAIL, --email EMAIL
+      -s SRC_HOST, --src_host SRC_HOST
+                            Source host for the copy in the form host:port
+      -t TGT_HOST, --tgt_host TGT_HOST
+                            List of hosts to copy to in the form
+                            host:port,host:port
+      -i SRC_INCL_DB, --src_incl_db SRC_INCL_DB
+                            List of databases to include in the copy. If not
+                            defined all the databases from the server will be
+                            copied
+      -k SRC_SKIP_DB, --src_skip_db SRC_SKIP_DB
+                            List of database to exclude from the copy
+      -p SRC_INCL_TABLES, --src_incl_tables SRC_INCL_TABLES
+                            List of tables to include in the copy
+      -d SRC_SKIP_TABLES, --src_skip_tables SRC_SKIP_TABLES
+                            List of tables to exclude from the copy
+      -n TGT_DB_NAME, --tgt_db_name TGT_DB_NAME
+                            Database name on target server. Used for renaming
+                            databases
+      -o SKIP_OPTIMIZE, --skip_optimize SKIP_OPTIMIZE
+                            Skip database optimization step after the copy. Useful
+                            for very large databases
+      -w WIPE_TARGET, --wipe_target WIPE_TARGET
+                            Delete target database before copy
+      -c CONVERT_INNODB, --convert_innodb CONVERT_INNODB
+                            Convert InnoDB tables to MyISAM after copy
+      -e EMAIL_LIST, --email_list EMAIL_LIST
                             Email where to send the report
+      -r USER, --user USER  User name
+      --skip-check          Skip host:port server validation
+
 
 Check job status
 ################
@@ -119,7 +140,7 @@ or using the Python client:
 
 .. code-block:: bash
 
-  db-copy-client.py --action list --uri http://production-services.ensembl.org/api/vertebrates/db/
-  db-copy-client.py --action list --uri http://production-services.ensembl.org/api/ensgenomes/db/
-  
-  
+  dbcopy-client --action list --uri http://production-services.ensembl.org/api/dbcopy/requestjob/
+  dbcopy-client --action list --uri http://production-services.ensembl.org/api/dbcopy/requestjob/
+
+
