@@ -60,13 +60,18 @@ N.B. Make sure `PYTHONPATH` is not set when activating a virtual environment
 
 .. code-block:: bash
 
-  SOURCE_SERVER=$(mysql-ens-vertannot-staging details url) #e.g: mysql://ensro@mysql-ens-vertannot-staging:4573/
-  TARGET_SERVER=$(mysql-ens-general-prod-1-ensadmin details url)
+  SOURCE_SERVER=$(mysql-ens-vertannot-staging details host-port)  # e.g.: mysql-ens-vertannot-staging:4573
+  TARGET_SERVER=$(mysql-ens-general-prod-1 details host-port)     # Can also be a comma separated list of servers (host:port,host:port)
   ENDPOINT=http://production-services.ensembl.org/api/dbcopy/requestjob/
+  EMAIL_LIST=$USER@ebi.ac.uk  # Can be a comma separated list of email addresses the system will notify
 
-  for db in $(cat db_to_copy.txt); do
-    dbcopy-client --action submit --uri ${ENDPOINT} --source_db_uri "${SOURCE_SERVER}${db}" --target_db_uri "${TARGET_SERVER}${db}" --drop 1
-  done
+  dbcopy-client -a submit \
+    -u $ENDPOINT \
+    -s $SOURCE_SERVER \
+    -t $TARGET_SERVER \
+    -e $EMAIL_LIST \
+    -r $USER \
+    -i `cat db_to_copy.txt | tr '\n' ',' | sed 's/,$//'`
 
 If activating a virtual environment is not feasible, `dbcopy-client` can be invoked directly:
 
@@ -80,7 +85,7 @@ Script usage
 
 The script accept the following arguments:
 
-.. code-block:: bash
+::
 
     usage: dbcopy-client [-h] -u URI -a
                          {submit,retrieve,list,delete,email,kill_job} [-j JOB_ID]
@@ -138,6 +143,6 @@ You can check job status either on the production interface: `<http://production
 
 or using the Python client:
 
-.. code-block:: bash
+::
 
-  dbcopy-client --action list --uri http://production-services.ensembl.org/api/dbcopy/requestjob/ -s <src_host> -t <tgt_host> -e <email> -r <user>
+  dbcopy-client -a list -u http://production-services.ensembl.org/api/dbcopy/requestjob/ -s <src_host> -t <tgt_host> -e <email> -r <user>
