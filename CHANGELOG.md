@@ -1,1 +1,15 @@
-1.0.0
+Changelog
+=========
+
+2.0 - Fix datacheck-client submit
+---------------------------------
+- Fix `datacheck_client` `submit_job()` call
+- Add `target_url` optional argument to datacheck-client command
+
+1.1 - Reuse VERSION in setup.py
+---------------------------------
+- Read VERSION file and use it in setup.py
+
+1.0 - Initial package version
+-----------------------------
+- Created commands entry points
