@@ -37,6 +37,7 @@ def main():
     parser.add_argument('-e', '--email', help='Email address for pipeline reports')
     parser.add_argument('-t', '--tag', help='Tag to collate results and facilitate filtering')
     parser.add_argument('-f', '--failure_only', help='Show failures only', action='store_true')
+    parser.add_argument('--target_url', help="Optional location of 'ancillary' server, for related database")
 
     args = parser.parse_args()
 
@@ -50,7 +51,7 @@ def main():
     if args.action == 'submit':
         job_id = client.submit_job(args.server_url, args.dbname, args.species, args.division, args.db_type,
                                    args.datacheck_names, args.datacheck_groups, args.datacheck_types,
-                                   args.email, args.tag)
+                                   args.email, args.tag, args.target_url)
         logging.info('Job submitted with ID ' + str(job_id))
 
     elif args.action == 'retrieve':
