@@ -11,9 +11,11 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 import argparse
+import json
 import logging
 
 from ensembl.production.core.clients.metadata import MetadataClient
+
 
 def main():
     parser = argparse.ArgumentParser(description='Metadata load via a REST service')
@@ -21,20 +23,20 @@ def main():
     parser.add_argument('-u', '--uri', help='Metadata database REST service URI', required=True)
     parser.add_argument('-a', '--action', help='Action to take',
                         choices=['submit', 'retrieve', 'list', 'delete', 'email', 'kill_job'], required=True)
-    parser.add_argument('-i', '--job_id', help='Metadata job identifier to retrieve')
+    parser.add_argument('-i', '--job_id', help='Job id to retrieve. In "list" mode, used as a cut-off')
     parser.add_argument('-v', '--verbose', help='Verbose output', action='store_true')
     parser.add_argument('-o', '--output_file', help='File to write output as JSON',
                         type=argparse.FileType('w'))
     parser.add_argument('-f', '--input_file', help='File containing list of metadata and database URIs',
                         type=argparse.FileType('r'))
-    parser.add_argument('-d', '--database_uri', help='URI of database to load', required=True)
+    parser.add_argument('-d', '--database_uri', help='URI of database to load')
     parser.add_argument('-s', '--e_release', help='Ensembl release number')
     parser.add_argument('-r', '--release_date', help='Release date')
     parser.add_argument('-c', '--current_release', help='Is this the current release')
     parser.add_argument('-g', '--eg_release', help='EG release number')
-    parser.add_argument('-e', '--email', help='Submitter', required=True)
-    parser.add_argument('-n', '--comment', help='Comment', required=True)
-    parser.add_argument('-b', '--source', help='Source of the database, eg: Handover, Release load', required=True)
+    parser.add_argument('-e', '--email', help='Submitter. In "list" mode, used as a filter')
+    parser.add_argument('-n', '--comment', help='Comment. In "list" mode, used as a regex pattern')
+    parser.add_argument('-b', '--source', help='Source of the database, eg: Handover, Release load')
 
     args = parser.parse_args()
 
@@ -59,7 +61,7 @@ def main():
                 uris = line.split()
                 logging.info("Submitting " + uris[0] + " for metadata load")
                 job_id = client.submit_job(uris[0], args.e_release, args.eg_release, args.release_date,
-                                           args.current_release, args.email, args.comment, args.source, None)
+                                           args.current_release, args.email, args.comment, args.source)
                 logging.info('Job submitted with ID ' + str(job_id))
 
     elif args.action == 'retrieve':
@@ -67,9 +69,12 @@ def main():
         client.print_job(job, print_results=True, print_input=True)
 
     elif args.action == 'list':
-        jobs = client.list_jobs()
-        for job in jobs:
-            client.print_job(job)
+        jobs = client.list_jobs(args.email, args.job_id, args.comment)
+        if args.output_file is None:
+            for job in jobs:
+                client.print_job(job)
+        else:
+            args.output_file.write(json.dumps(jobs, indent=2))
 
     elif args.action == 'delete':
         client.delete_job(args.job_id)
