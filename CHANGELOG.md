@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.2 - Enable filtering of metadata job lists
+--------------------------------------------
+- Filter lists of jobs based on three criteria: email, comment, job id.
+- Use ensembl-prodinf-core version 1.3.1
+
 2.1 - Use ensembl-prodinf-core version 1.2
 ------------------------------------------
 - Update requirements.txt
