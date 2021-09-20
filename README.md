@@ -14,11 +14,12 @@ System Requirements
 Installation
 ------------
 
-This repository can be installed as a Python package. Simply, clone it, then
-`cd` into its root directory and run:
+This repository can be installed as a Python package.
+We recommend to install the latest release tag instead of the default branch.
 
+For example, using _pip_:
 ```
-pip install .
+pip install git+https://github.com/Ensembl/ensembl-prodinf-tools.git@<Release Tag>
 ```
 
 
