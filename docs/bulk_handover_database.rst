@@ -62,7 +62,7 @@ For Vertebrates:
 .. code-block::
 
   DATABASE_SERVER=$(mysql-ens-general-prod-1 details url)
-  ENDPOINT=http://production-services.ensembl.org/api/vertebrates/ho/
+  ENDPOINT=http://production-services.ensembl.org/api/vertebrates/handovers/
   EMAIL=john.doe@ebi.ac.uk
   RELEASE=105
   DESCRIPTION="Handover $RELEASE new databases"
@@ -79,12 +79,12 @@ For Fungi/Protists/Bacteria:
 .. code-block:: bash
 
   pyenv activate production-tools
-  
+
   DATABASE_SERVER=$(mysql-ens-general-prod-1 details url)
-  ENDPOINT=http://production-services.ensembl.org/api/microbes/handovers/jobs
+  ENDPOINT=http://production-services.ensembl.org/api/microbes/handovers/
   EMAIL=john.doe@ebi.ac.uk
   DESCRIPTION="Handover 105 Fungi databases "
-  
+
   for db in $(cat fungi_handover.txt);
   do handover-client --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
   done
@@ -123,20 +123,20 @@ The script accept the following arguments:
 Check job status
 ################
 
-You can check job status either on the production interface: `<http://production-services.ensembl.org/>`_ or `<http://production-services.ensembl.org/api/microbes/handovers/jobs/>`_ for microbes
+You can check job status either on the production interface: `<http://production-services.ensembl.org/>`_ or `<http://production-services.ensembl.org/api/microbes/handovers/jobs>`_ for microbes
 
 or using the Python client:
 
 .. code-block:: bash
 
-  handover-client --action list --uri http://production-services.ensembl.org/api/vertebrates/handovers/jobs/
-  handover-client --action list --uri http://production-services.ensembl.org/api/microbes/handovers/jobs/
-  
+  handover-client --action list --uri http://production-services.ensembl.org/api/vertebrates/handovers/
+  handover-client --action list --uri http://production-services.ensembl.org/api/microbes/handovers/
+
 If you have handed over many databases, you can get a summary of your handover:
 
 .. code-block:: bash
 
-  handover-client --action summary --uri http://production-services.ensembl.org/api/vertebrates/handovers/jobs/ -e john.doe@ebi.ac.uk
-  handover-client --action summary --uri http://production-services.ensembl.org/api/microbes/handovers/jobs/ -e john.doe@ebi.ac.uk
+  handover-client --action summary --uri http://production-services.ensembl.org/api/vertebrates/handovers/ -e john.doe@ebi.ac.uk
+  handover-client --action summary --uri http://production-services.ensembl.org/api/microbes/handovers/ -e john.doe@ebi.ac.uk
 
 If a database was handed over multiple times, you will only see the latest one.
