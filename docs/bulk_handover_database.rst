@@ -67,26 +67,21 @@ For Vertebrates:
   RELEASE=105
   DESCRIPTION="Handover $RELEASE new databases"
 
-  cd $BASE_DIR/ensembl-prodinf-core
-  git checkout stable
-  pyenv activate production-app
-  for db in $(cat vertebrates_handover.txt);
-  do handover-client --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
+  for db in $(cat vertebrates_handover.txt); do
+    handover-client --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
   done
 
 For Fungi/Protists/Bacteria:
 
 .. code-block:: bash
 
-  pyenv activate production-tools
-
   DATABASE_SERVER=$(mysql-ens-general-prod-1 details url)
   ENDPOINT=http://production-services.ensembl.org/api/microbes/handovers/
   EMAIL=john.doe@ebi.ac.uk
-  DESCRIPTION="Handover 105 Fungi databases "
+  DESCRIPTION="Handover 105 Fungi databases"
 
-  for db in $(cat fungi_handover.txt);
-  do handover-client --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
+  for db in $(cat fungi_handover.txt); do
+    handover-client --action submit --uri ${ENDPOINT} --src_uri "${DATABASE_SERVER}${db}" --email "${EMAIL}" --description "${DESCRIPTION}";
   done
 
 
@@ -129,12 +124,16 @@ or using the Python client:
 
 .. code-block:: bash
 
+  pyenv activate production-tools
+
   handover-client --action list --uri http://production-services.ensembl.org/api/vertebrates/handovers/
   handover-client --action list --uri http://production-services.ensembl.org/api/microbes/handovers/
 
 If you have handed over many databases, you can get a summary of your handover:
 
 .. code-block:: bash
+
+  pyenv activate production-tools
 
   handover-client --action summary --uri http://production-services.ensembl.org/api/vertebrates/handovers/ -e john.doe@ebi.ac.uk
   handover-client --action summary --uri http://production-services.ensembl.org/api/microbes/handovers/ -e john.doe@ebi.ac.uk
