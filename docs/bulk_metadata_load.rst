@@ -43,21 +43,18 @@ Vertebrates:
 Submit the jobs using Python REST db copy endpoint:
 ###################################################
 
-Clone the ensembl-prodinf-core repo:
+To Submit the job via the REST endpoint
 
-.. code-block:: bash
+.. code-block::
 
-  git clone https://github.com/Ensembl/ensembl-prodinf-core
-  cd ensembl-prodinf-core
-
-To Submit the job via the REST enpoint
+    pyenv activate production-tools
 
 For Ensembl:
 
 .. code-block:: bash
 
   DATABASE_SERVER=$(mysql-ens-sta-1 details url)
-  ENDPOINT=http://production-services.ensembl.org/api/vertebrates/meta/
+  ENDPOINT=http://production-services.ensembl.org/api/vertebrates/metadata/
   ENS_VERSION=91
   RELEASE_DATE="2017-12-06"
   CURRENT_RELEASE=1
@@ -65,19 +62,16 @@ For Ensembl:
   COMMENT="Loading database for release 91"
   SOURCE="Pre release load"
 
-  cd $BASE_DIR/ensembl-prodinf-core
-  git checkout stable
-  pyenv activate production-app
-  for db in $(cat metadata_load.txt); 
-  do ensembl_prodinf/metadata_client.py --action submit --uri ${ENDPOINT} --database_uri "${DATABASE_SERVER}${db}" --e_release ${ENS_VERSION} --release_date ${RELEASE_DATE} --current_release ${CURRENT_RELEASE} --email "${EMAIL}" --comment "${COMMENT}" --source "${SOURCE}";
+  for db in $(cat metadata_load.txt); do
+    metadata-client --action submit --uri ${ENDPOINT} --database_uri "${DATABASE_SERVER}${db}" --e_release ${ENS_VERSION} --release_date ${RELEASE_DATE} --current_release ${CURRENT_RELEASE} --email "${EMAIL}" --comment "${COMMENT}" --source "${SOURCE}";
   done
 
-For Non vertebrates:
+For Fungi/Protists/Bacteria:
 
 .. code-block:: bash
 
   DATABASE_SERVER=$(mysql-ens-sta-3 details url)
-  ENDPOINT=http://production-services.ensembl.org/api/ensgenomes/meta/
+  ENDPOINT=http://production-services.ensembl.org/api/microbes/metadata/
   ENS_VERSION=91
   RELEASE_DATE="2017-12-13"
   EG_VERSION=38
@@ -86,9 +80,8 @@ For Non vertebrates:
   COMMENT="Loading database for release 91"
   SOURCE="Pre release load"
 
-  cd $BASE_DIR/ensembl-prodinf-core 
-  for db in $(cat eg_metadata_load.txt); 
-  do ensembl_prodinf/metadata_client.py --action submit --uri ${ENDPOINT} --database_uri "${DATABASE_SERVER}${db}" --e_release ${ENS_VERSION} --release_date ${RELEASE_DATE} --current_release ${CURRENT_RELEASE} --eg_release ${EG_VERSION} --email "${EMAIL}" --comment "${COMMENT}" --source "${SOURCE}";
+  for db in $(cat eg_metadata_load.txt); do
+    metadata-client --action submit --uri ${ENDPOINT} --database_uri "${DATABASE_SERVER}${db}" --e_release ${ENS_VERSION} --release_date ${RELEASE_DATE} --current_release ${CURRENT_RELEASE} --eg_release ${EG_VERSION} --email "${EMAIL}" --comment "${COMMENT}" --source "${SOURCE}";
   done
 
 
@@ -99,7 +92,7 @@ The script accept the following arguments:
 
 ::
 
-  usage: metadata_client.py [-h] -u URI -a
+  usage: metadata-client [-h] -u URI -a
                           {submit,retrieve,list,delete,email,kill_job}
                           [-i JOB_ID] [-v] [-o OUTPUT_FILE] [-f INPUT_FILE]
                           [-m METADATA_URI] [-d DATABASE_URI] [-s E_RELEASE]
@@ -143,13 +136,15 @@ The script accept the following arguments:
 Check job status
 ################
 
-You can check job status either on the production interface: `<http://production-services.ensembl.org/app/vertebrates/>`_ or `<http://production-services.ensembl.org/app/plants/>`_ for non vertebrates:
+You can check job status either on the production interface: `<http://production-services.ensembl.org/>`_ or `<http://production-services.ensembl.org/api/microbes/metadata/jobs>`_ for non vertebrates:
 
 or using the Python client:
 
 .. code-block:: bash
 
-  ensembl_prodinf/metadata_client.py --action list --uri http://production-services.ensembl.org/api/vertebrates/meta/
-  ensembl_prodinf/metadata_client.py --action list --uri http://production-services.ensembl.org/api/ensgenomes/meta/
-  
-  
+  pyenv activate production-tools
+
+  metadata-client --action list --uri http://production-services.ensembl.org/api/vertebrates/metadata/
+  metadata-client --action list --uri http://production-services.ensembl.org/api/microbes/metadata/
+
+
