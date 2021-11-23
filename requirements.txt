@@ -1,2 +1,2 @@
 ensembl-prodinf-core~=2.0.0
-requests~=2.25.1
+requests>=2.25,<3
