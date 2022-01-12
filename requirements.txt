@@ -1,1 +1,2 @@
 ensembl-prodinf-core~=2.0.0
+ensembl-py @ git+https://github.com/Ensembl/ensembl-py.git
