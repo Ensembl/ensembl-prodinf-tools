@@ -77,7 +77,7 @@ def parse_arguments():
                         help='Copy database REST service URL')
     parser.add_argument('-D', '--dry-run', action='store_true',
                         help='Prints copy jobs without submitting them.')
-    parser.add_argument('-T', '--fake', action='store_true',
+    parser.add_argument('-F', '--fake', action='store_true',
                         help='Fake for local testing without mysql shortcut commands available.')
     args = parser.parse_args()
     return args
