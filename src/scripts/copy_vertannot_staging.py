@@ -31,9 +31,9 @@ from collections import namedtuple
 
 import requests
 import sqlalchemy as sa
+from sqlalchemy.engine.url import make_url
 
 from ensembl.production.core.clients.dbcopy import DbCopyRestClient
-from ensembl.production.core.db_utils import validate_mysql_url
 from ensembl.utils import RemoteFileLoader
 
 CopyJob = namedtuple('CopyJob',
@@ -44,8 +44,8 @@ Database = namedtuple('Database', 'name division')
 GITHUB_BASE = 'https://raw.githubusercontent.com/Ensembl/ensembl-compara/release/{}/conf/{}/allowed_species.json'
 DIVISION_HOST = {
     'vertebrates': 'st1',
-    'plants': 'sta3',
-    'metazoa': 'sta3'
+    'plants': 'st3',
+    'metazoa': 'st3'
 }
 
 DIVISION_ENS_MAP = {
@@ -95,19 +95,24 @@ def src_host(division, args):
     if args.fake:
         return f"mysql://{host}:3306"
     db_host = _exec_cmd(host + " details url")
-    return db_host
+    db_url = make_url(db_host)
+    return ':'.join([db_url.host, str(db_url.port)])
 
 
 def tgt_host(args):
     if args.fake:
         return "mysql://vertannot-staging:3306"
-    return _exec_cmd(args.target_server + " details url")
+    db_host = _exec_cmd(args.target_server + " details url")
+    db_url = make_url(db_host)
+    return ':'.join([db_url.host, str(db_url.port)])
 
 
 def meta_host(args):
+    if args.metadata_url:
+        return args.metadata_url
     if args.fake:
         return 'mysql://ensembl@localhost:3306/ensembl_metadata'
-    return _exec_cmd("meta1 details url")
+    return _exec_cmd("meta1 details url") + 'ensembl_metadata'
 
 
 def get_databases(metadata_engine, species, division, args):
@@ -186,7 +191,6 @@ def main():
     compara_species = parse_species(args.ens_version)
     dbcopy_url = args.dbcopy_url
     metadata_url = args.metadata_url or meta_host(args)
-    metadata_url = validate_mysql_url(metadata_url)
     metadata_engine = sa.create_engine(metadata_url)
     copy_client = DbCopyRestClient(dbcopy_url)
     if not args.division:
