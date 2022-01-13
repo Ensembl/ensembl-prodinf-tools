@@ -146,7 +146,7 @@ def make_jobs(databases, division, args):
     # Chunk databases list in required string length
     for database in databases:
         length = sum(len(s) for s in chunks[parts])
-        if length + len(database) > 1024:
+        if length + len(database) > 2000:
             parts += 1
             chunks.append([])
         chunks[parts].append(database)
