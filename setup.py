@@ -56,7 +56,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            # "copy-from-report=scripts.copy_from_report:main",
+            "copy-vertannot-staging=scripts.copy_vertannot_staging:main",
             "datacheck-client=scripts.datacheck_client:main",
             "dbcopy-client=scripts.dbcopy_client:main",
             "gifts-client=scripts.gifts_client:main",
