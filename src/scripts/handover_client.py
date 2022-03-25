@@ -13,14 +13,10 @@
 
 import argparse
 import logging
-import re
-from datetime import datetime
-
-import requests
-from sqlalchemy.engine.url import make_url
+from urllib.parse import urlparse
 
 from ensembl.production.core.clients.handover import HandoverClient
-from ensembl.production.core.server_utils import assert_http_uri, assert_mysql_db_uri, assert_email
+from ensembl.production.core.db_utils import validate_mysql_url
 
 
 def main():
@@ -45,11 +41,17 @@ def main():
         args.uri = args.uri + '/'
 
     client = HandoverClient(args.uri)
+    try:
+        validate_mysql_url(args.src_uri)
+    except ValueError:
+        raise ValueError("Wrong database format")
+    parsed_uri = urlparse(args.src_uri)
 
     if args.action == 'submit':
 
         spec = {
             "src_uri": args.src_uri,
+            "database": parsed_uri.path[1:],
             "contact": args.email,
             "comment": args.description
         }
