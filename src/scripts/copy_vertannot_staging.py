@@ -37,7 +37,7 @@ from ensembl.production.core.clients.dbcopy import DbCopyRestClient
 from ensembl.utils import RemoteFileLoader
 
 CopyJob = namedtuple('CopyJob',
-                     'src_host, src_incl_db tgt_host email user')
+                     'src_host, src_incl_db, tgt_host, email, user')
 
 Database = namedtuple('Database', 'name division')
 
