@@ -41,13 +41,13 @@ def main():
         args.uri = args.uri + '/'
 
     client = HandoverClient(args.uri)
-    try:
-        validate_mysql_url(args.src_uri)
-    except ValueError:
-        raise ValueError("Wrong database format")
-    parsed_uri = urlparse(args.src_uri)
 
     if args.action == 'submit':
+        try:
+            validate_mysql_url(args.src_uri)
+        except ValueError:
+            raise ValueError("Wrong database format")
+        parsed_uri = urlparse(args.src_uri)
 
         spec = {
             "src_uri": args.src_uri,
