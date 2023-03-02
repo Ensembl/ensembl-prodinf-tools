@@ -1,2 +1,3 @@
 ensembl-prodinf-core~=2.0.0
 ensembl-py @ git+https://github.com/Ensembl/ensembl-py.git
+ensembl-metadata-api @ git+https://github.com/Ensembl/ensembl-metadata-api.git

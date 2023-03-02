@@ -34,8 +34,8 @@ setup(
     package_dir={'': 'src'},
     url='https://github.com/Ensembl/ensembl-prodinf-tools',
     license='APACHE 2.0',
-    author='Marc Chakiachvili,James Allen,Luca Da Rin Fioretto,Vinay Kaikala',
-    author_email='mchakiachvili@ebi.ac.uk,jallen@ebi.ac.uk,ldrf@ebi.ac.uk,vkaikala@ebi.ac.uk',
+    author='Marc Chakiachvili,James Allen,Luca Da Rin Fioretto,Vinay Kaikala,Daniel Poppleton',
+    author_email='mchakiachvili@ebi.ac.uk,jallen@ebi.ac.uk,ldrf@ebi.ac.uk,vkaikala@ebi.ac.uk,danielp@ebi.ac.uk',
     maintainer='Ensembl Production Team',
     maintainer_email='ensembl-production@ebi.ac.uk',
     description='Ensembl Production infrastructure toolkit and python scripts',
@@ -61,6 +61,7 @@ setup(
             "gifts-client=scripts.gifts_client:main",
             "handover-client=scripts.handover_client:main",
             "metadata-client=scripts.metadata_client:main",
+            "metadata-update=scripts.metadata_update:main",
         ]
 
     }
