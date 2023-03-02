@@ -16,7 +16,7 @@ import re
 from sqlalchemy.engine.url import make_url
 from ensembl.production.metadata.updater import CoreMetaUpdater
 def main():
-    parser = argparse.ArgumentParser(description='Method for loading data from a spcific database to a metadata registry')
+    parser = argparse.ArgumentParser(description='Method for loading data from a specific database to a metadata registry')
 
     parser.add_argument('-m', '--uri', help='Metadata database URI', required=True)
     parser.add_argument('-d', '--database_uri', help='URI of database to load', required=True)
