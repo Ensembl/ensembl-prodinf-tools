@@ -13,10 +13,14 @@
 
 import argparse
 import re
-from sqlalchemy.engine.url import make_url
+
 from ensembl.production.metadata.updater import CoreMetaUpdater
+from sqlalchemy.engine.url import make_url
+
+
 def main():
-    parser = argparse.ArgumentParser(description='Method for loading data from a specific database to a metadata registry')
+    parser = argparse.ArgumentParser(
+        description='Method for loading data from a specific database to a metadata registry')
 
     parser.add_argument('-m', '--uri', help='Metadata database URI', required=True)
     parser.add_argument('-d', '--database_uri', help='URI of database to load', required=True)
@@ -45,18 +49,14 @@ def main():
     elif re.match('^\w+_?\d*_\d+$', db_url.database):
         raise Exception("other not implemented yet")
     elif re.match(
-            '^ensembl_accounts|ensembl_archive|ensembl_autocomplete|ensembl_metadata|ensembl_production|ensembl_stable_ids|ncbi_taxonomy|ontology|website', db_url.database):
+            '^ensembl_accounts|ensembl_archive|ensembl_autocomplete|ensembl_metadata|ensembl_production|ensembl_stable_ids|ncbi_taxonomy|ontology|website',
+            db_url.database):
         raise Exception("other not implemented yet")
+    elif '_collection_' in db_url.database:
+        raise Exception("Collection not implemented yet")
     else:
         raise "Can't find data_type for database " + db_url.database
-
-# !DP!#
-# NOT DONE#######################Worry about this after the core et al are done. Don't delete it yet.
-#     elif '_collection_' in db_url.database:
-#        self.db_type = "collection"
-################################################################
 
 
 if __name__ == '__main__':
     main()
-
