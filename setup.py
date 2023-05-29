@@ -10,7 +10,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 from pathlib import Path
-
+import os
 from setuptools import setup, find_namespace_packages
 
 with open(Path(__file__).parent / 'README.md') as f:
@@ -29,7 +29,7 @@ def import_requirements():
 
 setup(
     name='ensembl-prodinf-tools',
-    version=version,
+    version=os.getenv('CI_COMMIT_TAG', version),
     packages=find_namespace_packages(where='src'),
     package_dir={'': 'src'},
     url='https://github.com/Ensembl/ensembl-prodinf-tools',
@@ -39,7 +39,7 @@ setup(
     maintainer='Ensembl Production Team',
     maintainer_email='ensembl-production@ebi.ac.uk',
     description='Ensembl Production infrastructure toolkit and python scripts',
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     install_requires=import_requirements(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -48,7 +48,7 @@ setup(
         'License :: OSI Approved :: APACHE 2.0 License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Utilities',
         'Topic :: System :: Distributed Computing',
         'Operating System :: POSIX',
@@ -62,6 +62,5 @@ setup(
             "handover-client=scripts.handover_client:main",
             "metadata-client=scripts.metadata_client:main",
         ]
-
     }
 )
