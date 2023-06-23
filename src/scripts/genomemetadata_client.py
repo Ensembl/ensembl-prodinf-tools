@@ -43,7 +43,7 @@ def main():
     parser.add_argument('-n', '--name', help='Dataset name. Required for dataset submission')
     parser.add_argument('-d', '--description', help='Description of dataset. Required for dataset submission')
     parser.add_argument('-l', '--label', help='Dataset label. Required for dataset submission')
-    parser.add_argument('-t', '--type', help='Dataset type name. Required for dataset submission')
+    parser.add_argument('-ty', '--type', help='Dataset type name. Required for dataset submission')
     parser.add_argument('-s', '--source', help='Dataset source name. Required for dataset submission')
     parser.add_argument('-da', '--dataset_attribute', nargs=2, action='append',
                         help='List of dataset attributes in the form "-da name value" ')
