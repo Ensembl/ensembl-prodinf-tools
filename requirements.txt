@@ -20,7 +20,7 @@ ensembl-hive @ git+https://github.com/Ensembl/ensembl-hive.git
     #   ensembl-py
 ensembl-prodinf-core==2.0.6
     # via -r requirements.in
-ensembl-py @ git+https://github.com/Ensembl/ensembl-py.git@1.0.0
+ensembl-py @ git+https://github.com/Ensembl/ensembl-py.git@1.1.0
     # via -r requirements.in
 greenlet==2.0.2
     # via sqlalchemy
