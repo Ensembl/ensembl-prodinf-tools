@@ -37,15 +37,15 @@ def main():
                         help='Action to take. Options: submit (only for dataset), retrieve, list')
     parser.add_argument('-t', '--table', choices=['datasets', 'genomes'], required=True,
                         help='Table. Options: datasets, genomes')
-    parser.add_argument('-gu', '--guuid', help='UUID of genome to retrieve or submit.  Required for dataset submission')
-    parser.add_argument('-du', '--duuid', help='UUID of dataset to retrieve')
+    parser.add_argument('-g', '--guuid', help='UUID of genome to retrieve or submit.  Required for dataset submission')
+    parser.add_argument('-i', '--duuid', help='UUID of dataset to retrieve')
     parser.add_argument('-u', '--user', help='User registered with this service. Required for dataset submission')
     parser.add_argument('-n', '--name', help='Dataset name. Required for dataset submission')
     parser.add_argument('-d', '--description', help='Description of dataset. Required for dataset submission')
     parser.add_argument('-l', '--label', help='Dataset label. Required for dataset submission')
-    parser.add_argument('-ty', '--type', help='Dataset type name. Required for dataset submission')
+    parser.add_argument('-y', '--type', help='Dataset type name. Required for dataset submission')
     parser.add_argument('-s', '--source', help='Dataset source name. Required for dataset submission')
-    parser.add_argument('-da', '--dataset_attribute', nargs=2, action='append',
+    parser.add_argument('-r', '--dataset_attribute', nargs=2, action='append',
                         help='List of dataset attributes in the form "-da name value" ')
     parser.add_argument('-p', '--payload', help='Alternate method with direct submission of a json. Only for create')
     args = parser.parse_args()
