@@ -31,22 +31,19 @@ def handle_key_error(error, job):
 
 def main():
     parser = argparse.ArgumentParser(description='Interact with ensembl genome REST client')
-    parser.add_argument('-u', '--uri', required=True,
-                        help='Base URI, api. ex:https://services.test.ensembl-production.ebi.ac.uk/')
-    parser.add_argument('-a', '--action', choices=['submit', 'retrieve', 'list'], required=True,
-                        help='Action to take. Options: submit (only for dataset), retrieve, list')
-    parser.add_argument('-t', '--table', choices=['datasets', 'genomes'], required=True,
-                        help='Table. Options: datasets, genomes')
-    parser.add_argument('-g', '--guuid', help='UUID of genome to retrieve or submit.  Required for dataset submission')
-    parser.add_argument('-i', '--duuid', help='UUID of dataset to retrieve')
+    parser.add_argument('-u', '--uri', required=True, help='Base URI, api. ex:https://services.test.ensembl-production.ebi.ac.uk/')
+    parser.add_argument('-a', '--action', choices=['submit', 'retrieve', 'list', 'update'], required=True, help='Action to take. Options: submit (only for dataset), retrieve, list')
+    parser.add_argument('-t', '--table', choices=['datasets', 'genomes'], required=True, help='Table. Options: datasets, genomes')
+    parser.add_argument('-g', '--guuid', help='UUID of genome to retrieve or submit. Required for dataset submission')
+    parser.add_argument('-i', '--duuid', help='UUID of dataset to retrieve or update')
     parser.add_argument('-u', '--user', help='User registered with this service. Required for dataset submission')
     parser.add_argument('-n', '--name', help='Dataset name. Required for dataset submission')
     parser.add_argument('-d', '--description', help='Description of dataset. Required for dataset submission')
     parser.add_argument('-l', '--label', help='Dataset label. Required for dataset submission')
     parser.add_argument('-y', '--type', help='Dataset type name. Required for dataset submission')
-    parser.add_argument('-s', '--source', help='Dataset source name. Required for dataset submission')
-    parser.add_argument('-r', '--dataset_attribute', nargs=2, action='append',
-                        help='List of dataset attributes in the form "-da name value" ')
+    parser.add_argument('-s', '--source_name', help='Dataset source name. Required for dataset submission')
+    parser.add_argument('-z', '--source_type', help='Dataset source type. Required for dataset submission')
+    parser.add_argument('-r', '--dataset_attribute', nargs=2, action='append', help='List of dataset attributes in the form "-da name value" ')
     parser.add_argument('-p', '--payload', help='Alternate method with direct submission of a json. Only for create')
     args = parser.parse_args()
 
@@ -56,23 +53,24 @@ def main():
             if args.payload is not None:
                 client.create_dataset(args.payload)
             else:
-                required_args = ['guuid', 'user', 'name', 'description', 'label', 'type', 'source']
+                required_args = ['guuid', 'user', 'name', 'description', 'label', 'type', 'source_name', 'source_type']
                 if [arg for arg in required_args if getattr(args, arg) is None]:
-                    ValueError("Argument missing. Required arguments are " + required_args)
+                    ValueError("Argument missing. Required arguments are " + ", ".join(required_args))
                 dataset_attribute = []
                 for pair in args.dataset_attribute:
-                    key, value = pair
-                    if key.isdigit():
-                        dataset_attribute.append({"attribute_id": int(key), "value": value})
-                    else:
-                        dataset_attribute.append({"name": key, "value": value})
+                    name, value = pair
+                    dataset_attribute.append({"name": name, "value": value})
+
                 payload = {
                     "user": args.user,
                     "name": args.name,
                     "description": args.description,
                     "label": args.label,
                     "dataset_type": args.type,
-                    "dataset_source": args.source,
+                    "dataset_source": {
+                        "name": args.source_name,
+                        "type": args.source_type
+                    },
                     "genome_uuid": args.guuid,
                     "dataset_attribute": dataset_attribute,
                 }
@@ -96,6 +94,23 @@ def main():
                     ValueError("Argument missing. Required arguments for genome  is guuid")
                 client.get_dataset_by_uuid(args.guuid)
 
+            elif args.action == 'update':
+                required_args = ['dataset_uuid', 'user']
+                if [arg for arg in required_args if getattr(args, arg) is None]:
+                    raise ValueError("Argument missing. Required arguments for PUT are " + ", ".join(required_args))
+
+                dataset_attribute = []
+                if args.dataset_attribute:
+                    for name, value in args.dataset_attribute:
+                        dataset_attribute.append({"name": name, "value": value})
+
+                payload = {
+                    "user": args.user,
+                    "dataset_uuid": args.dataset_uuid,
+                    "dataset_attribute": dataset_attribute
+                }
+                json_payload = json.dumps(payload)
+                client.update_dataset(json_payload)
 
     except RuntimeError as err:
         handle_runtime_error(err)
