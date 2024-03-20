@@ -44,7 +44,7 @@ def main():
     parser.add_argument('-z', '--source_type', help='Dataset source type. Required for dataset submission')
     parser.add_argument('-r', '--dataset_attribute', nargs=2, action='append', help='List of dataset attributes in the form "-da name value" ')
     parser.add_argument('-p', '--payload', help='Alternate method with direct submission of a json. Only for create')
-    parser.add_argument('-pass', '--password', help='Password')
+    parser.add_argument('--pass', '--password', help='Password')
 
     args = parser.parse_args()
 
