@@ -35,7 +35,7 @@ def main():
     parser.add_argument('-t', '--table', choices=['datasets', 'genomes'], required=True, help='Table. Options: datasets, genomes')
     parser.add_argument('-g', '--guuid', help='UUID of genome to retrieve or submit. Required for dataset submission')
     parser.add_argument('-i', '--duuid', help='UUID of dataset to retrieve or update')
-    parser.add_argument('-us', '--user', help='User registered with this service. Required for dataset submission')
+    parser.add_argument('--user', help='User registered with this service. Required for dataset submission')
     parser.add_argument('-n', '--name', help='Dataset name. Required for dataset submission')
     parser.add_argument('-d', '--description', help='Description of dataset. Required for dataset submission')
     parser.add_argument('-l', '--label', help='Dataset label. Required for dataset submission')
