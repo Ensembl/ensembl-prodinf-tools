@@ -62,7 +62,7 @@ N.B. Make sure `PYTHONPATH` is not set when activating a virtual environment
 
   SOURCE_SERVER=$(mysql-ens-vertannot-staging details host-port)  # e.g.: mysql-ens-vertannot-staging:4573
   TARGET_SERVER=$(mysql-ens-general-prod-1 details host-port)     # Can also be a comma separated list of servers (host:port,host:port)
-  ENDPOINT=http://production-services.ensembl.org/api/dbcopy/requestjob
+  ENDPOINT=http://PROD_SERVICE_URI/api/dbcopy/requestjob
   EMAIL_LIST=$USER@ebi.ac.uk  # Can be a comma separated list of email addresses the system will notify
 
   dbcopy-client -a submit \
@@ -139,10 +139,10 @@ The script accept the following arguments:
 Check job status
 ################
 
-You can check job status either on the production interface: `<http://production-services.ensembl.org/ensembl_dbcopy/requestjob>`_ :
+You can check job status either on the production interface: `<http://PROD_SERVICE_URI/ensembl_dbcopy/requestjob>`_ :
 
 or using the Python client:
 
 ::
 
-  dbcopy-client -a list -u http://production-services.ensembl.org/api/dbcopy/requestjob -s <src_host> -t <tgt_host> -e <email> -r <user>
+  dbcopy-client -a list -u http://PROD_SERVICE_URI/api/dbcopy/requestjob -s <src_host> -t <tgt_host> -e <email> -r <user>

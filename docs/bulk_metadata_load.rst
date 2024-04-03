@@ -54,7 +54,7 @@ For Ensembl:
 .. code-block:: bash
 
   DATABASE_SERVER=$(mysql-ens-sta-1 details url)
-  ENDPOINT=http://production-services.ensembl.org/api/vertebrates/metadata/
+  ENDPOINT=http://PROD_SERVICE_URI/api/vertebrates/metadata/
   ENS_VERSION=91
   RELEASE_DATE="2017-12-06"
   CURRENT_RELEASE=1
@@ -71,7 +71,7 @@ For Fungi/Protists/Bacteria:
 .. code-block:: bash
 
   DATABASE_SERVER=$(mysql-ens-sta-3 details url)
-  ENDPOINT=http://production-services.ensembl.org/api/microbes/metadata/
+  ENDPOINT=http://PROD_SERVICE_URI/api/microbes/metadata/
   ENS_VERSION=91
   RELEASE_DATE="2017-12-13"
   EG_VERSION=38
@@ -136,7 +136,7 @@ The script accept the following arguments:
 Check job status
 ################
 
-You can check job status either on the production interface: `<http://production-services.ensembl.org/>`_ or `<http://production-services.ensembl.org/api/microbes/metadata/jobs>`_ for non vertebrates:
+You can check job status either on the production interface: `<http://PROD_SERVICE_URI/>`_ or `<http://PROD_SERVICE_URI/api/microbes/metadata/jobs>`_ for non vertebrates:
 
 or using the Python client:
 
@@ -144,7 +144,7 @@ or using the Python client:
 
   pyenv activate production-tools
 
-  metadata-client --action list --uri http://production-services.ensembl.org/api/vertebrates/metadata/
-  metadata-client --action list --uri http://production-services.ensembl.org/api/microbes/metadata/
+  metadata-client --action list --uri http://PROD_SERVICE_URI/api/vertebrates/metadata/
+  metadata-client --action list --uri http://PROD_SERVICE_URI/api/microbes/metadata/
 
 
