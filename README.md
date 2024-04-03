@@ -49,9 +49,5 @@ Tool for submitting/retrieving Gifts Jobs to/from EnsEMBL Production Gifts Servi
 Tool for submitting/retrieving Handover Jobs to/from EnsEMBL Production Handover Service
 
 
-#### `metadata-client`
-
-Tool for submitting/retrieving Metadata Jobs to/from EnsEMBL Production Metadata Service
-
 
 Please refer to [Docs](./docs) folder for each tool detailed usage.
