@@ -1,0 +1,128 @@
+# .. See the NOTICE file distributed with this work for additional information
+#    regarding copyright ownership.
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#        http://www.apache.org/licenses/LICENSE-2.0
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
+[project]
+name = "ensembl-prodinf-tools"
+description = "Ensembl Production infrastructure toolkit and python scripts"
+requires-python = ">= 3.10"
+version="2.6.0"
+readme = "README.md"
+authors = [
+    {name = "Ensembl", email = "dev@ensembl.org"},
+]
+license = {text = "Apache License 2.0"}
+keywords = [
+    "ensembl",
+    "production",
+    "python",
+    "toolkit",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Utilities",
+    "Topic :: System :: Distributed Computing",
+]
+dependencies = [
+    "ensembl-prodinf-core == 2.0.8",
+]
+
+[project.urls]
+Homepage = "https://www.ensembl.org"
+Repository = "https://github.com/Ensembl/ensembl-prodinf-tools"
+Issues = "https://github.com/Ensembl/ensembl-prodinf-tools/issues"
+
+[project.scripts]
+datacheck-client = "scripts.datacheck_client:main"
+dbcopy-client = "scripts.dbcopy_client:main"
+gifts-client = "scripts.gifts_client:main"
+handover-client = "scripts.handover_client:main"
+metadata-client = "scripts.genomemetadata_client:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+    "setuptools-scm",
+    "wheel",
+]
+
+[tool.black]
+line-length = 110
+
+[tool.pylint.main]
+max-line-length = 110
+disable = [
+    "invalid-name",
+    "logging-fstring-interpolation",
+    "similarities",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-statements",
+    "unspecified-encoding",
+    "wildcard-import",
+]
+
+[tool.mypy]
+mypy_path = "src/ensembl"
+explicit_package_bases = true
+ignore_missing_imports = true
+show_error_codes = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+    "--tb=native",
+]
+testpaths = ["tests"]
+norecursedirs = ["docs", "*.egg_info"]
+
+[tool.coverage.run]
+branch = true
+source = [
+    "ensembl.utils",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    # Do not complain about missing debug-only code
+    "def __repr__",
+    "if self\\.debug",
+    "if settings\\.DEBUG",
+    # Do not complain if tests do not hit defensive assertion code
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Do not complain if non-runnable code is not run
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "def main",
+    "def .*_cli",
+    # Do not complain about abstract methods, they are not run
+    "@(abc\\.)?abstractmethod",
+]
