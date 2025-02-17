@@ -15,6 +15,7 @@ import argparse
 import logging
 import sys
 import json
+
 from ensembl.production.core.clients.genomemetadata import GenomeMetadataRestClient
 
 
